@@ -1,5 +1,5 @@
 ### What is this
-Playground/boilerplate for project with Typescript, Rollup, Cycle.js, Most.js
+Playground/boilerplate for project with React, Typescript, Rollup
 
 ### Installation
 To install, run `yarn install`
