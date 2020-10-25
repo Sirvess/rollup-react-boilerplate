@@ -7,7 +7,7 @@
   "license": "MIT",
   "scripts": {
     "bundle": "rollup --c",
-    "check-types": "tsc ./src/index.tsx --noEmit",
+    "check-types": "tsc --noEmit",
     "dev": "rollup --c rollup.config.dev.js --watch"
   },
   "dependencies": {
