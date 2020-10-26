@@ -10,7 +10,7 @@ export default {
         file: "./dist/bundle.js",
     },
     plugins: [
-        resolve(),
+        resolve({browser:true}),
         commonjs(),
         typescript(),
         html(),
