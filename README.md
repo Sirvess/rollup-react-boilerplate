@@ -1,5 +1,5 @@
 ### What is this
-Playground/boilerplate for project with React, Typescript, Rollup
+Boilerplate for project with React, Typescript, Rollup.
 
 ### Installation
 To install, run `yarn install`
