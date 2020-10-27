@@ -4,15 +4,15 @@ import styled from "styled-components";
 const GameContainer = styled.div`
   display: grid;
   grid-gap: 1px;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, 100px);
+  grid-template-rows: repeat(3, 100px);
   border: 1px solid yellow;
 `;
 const GameCell = styled.div`
   display: flex;
-  min-height: 10px;
-  min-width: 10px;
   border: 1px solid blue;
   justify-content: center;
+  align-items: center;
   cursor: pointer;
 `;
 
@@ -89,7 +89,10 @@ const Game = () => {
                 setGameState(newGame);
                 setWinner(checkIfWinner(gameState));
                 toggleTurn();
-              } else {
+              } else if (
+                gameState.filter((x) => x === null).length === 0 ||
+                winner
+              ) {
                 setGameState(emptyGame());
                 setWinner(null);
                 setTurn("x");
@@ -103,6 +106,16 @@ const Game = () => {
       Current turn: {turn}
       <br />
       {winner !== null ? `Winner is: ${winner}` : ""}
+      <br />
+      <button
+        onClick={() => {
+          setGameState(emptyGame());
+          setWinner(null);
+          setTurn("x");
+        }}
+      >
+        Reset
+      </button>
     </>
   );
 };
