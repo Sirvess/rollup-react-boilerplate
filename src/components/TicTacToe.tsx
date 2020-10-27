@@ -5,14 +5,22 @@ const GameContainer = styled.div`
   display: grid;
   grid-gap: 1px;
   grid-template-columns: repeat(3, 1fr);
+  border: 1px solid yellow;
 `;
 const GameCell = styled.div`
-  background-color: blue;
+  display: flex;
+  min-height: 10px;
+  min-width: 10px;
+  border: 1px solid blue;
+  justify-content: center;
+  cursor: pointer;
 `;
 
 type CellValue = "x" | "o" | null;
 type GameArr = CellValue[];
-const emptyGame: GameArr = [
+type WinChecker = (x: GameArr) => CellValue;
+
+const emptyGame: () => GameArr = () => [
   null,
   null,
   null,
@@ -24,49 +32,78 @@ const emptyGame: GameArr = [
   null,
 ];
 
-// TODO: Implement these
-declare const checkRows: (x: GameArr) => CellValue;
-declare const checkColumns: (x: GameArr) => CellValue;
-declare const checkDiagonals: (x: GameArr) => CellValue;
+const checkIndeces: (
+  game: GameArr
+) => (winningIndexCombo: number[]) => CellValue = (game) => (indeces) =>
+  indeces
+    .map((i) => game[i])
+    .reduce((a, b) => (a !== null && a === b ? a : null));
 
-const winningTests = [checkRows, checkColumns, checkDiagonals];
+const getWinner = (a: CellValue, b: CellValue) =>
+  a !== null ? a : b !== null ? b : null;
+
+const rowOneIndeces = [0, 1, 2];
+const rowTwoIndeces = [3, 4, 5];
+const rowThreeIndeces = [6, 7, 8];
+const checkRows: WinChecker = (game) =>
+  [rowOneIndeces, rowTwoIndeces, rowThreeIndeces]
+    .map(checkIndeces(game))
+    .reduce(getWinner);
+
+const colOneIndeces = [0, 3, 6];
+const colTwoIndeces = [1, 4, 7];
+const colThreeIndeces = [2, 5, 8];
+const checkColumns: WinChecker = (game) =>
+  [colOneIndeces, colTwoIndeces, colThreeIndeces]
+    .map(checkIndeces(game))
+    .reduce(getWinner);
+
+const topLeftDiagIndeces = [0, 4, 8];
+const topRightDiagIndeces = [2, 4, 6];
+const checkDiagonals: WinChecker = (game) =>
+  [topLeftDiagIndeces, topRightDiagIndeces]
+    .map(checkIndeces(game))
+    .reduce(getWinner);
+
+const winningTests: WinChecker[] = [checkRows, checkColumns, checkDiagonals];
 
 const checkIfWinner = (game: GameArr): CellValue =>
   winningTests.reduce((a, b) => (a !== null ? a : b(game)), null as CellValue);
 
 const Game = () => {
-  const [gameState, setGameState] = React.useState<GameArr>(emptyGame);
+  const [gameState, setGameState] = React.useState<GameArr>(emptyGame());
   const [winner, setWinner] = React.useState<"x" | "o" | null>(null);
   const [turn, setTurn] = React.useState<"x" | "o">("x");
   const toggleTurn = () => (turn === "x" ? setTurn("o") : setTurn("x"));
 
-  React.useEffect(() => {
-    setWinner(checkIfWinner(gameState));
-  }, [gameState]);
-
   return (
-    <GameContainer>
-      {gameState.map((x, i) => (
-        <GameCell
-          key={i}
-          onClick={() => {
-            if (winner) {
-              setGameState(emptyGame);
-              setTurn("x");
-            } else if (gameState[i] === null && !winner) {
-              const newGame = gameState;
-              newGame[i] = turn;
-              setGameState(newGame);
-              toggleTurn();
-            }
-          }}
-        >
-          {x}
-          {i}
-        </GameCell>
-      ))}
-      {winner !== null ? `${winner}` : ""}
-    </GameContainer>
+    <>
+      <GameContainer>
+        {gameState.map((x, i) => (
+          <GameCell
+            key={i}
+            onClick={() => {
+              if (gameState[i] === null && !winner) {
+                const newGame = gameState;
+                newGame[i] = turn;
+                setGameState(newGame);
+                setWinner(checkIfWinner(gameState));
+                toggleTurn();
+              } else {
+                setGameState(emptyGame());
+                setWinner(null);
+                setTurn("x");
+              }
+            }}
+          >
+            {x || `-`}
+          </GameCell>
+        ))}
+      </GameContainer>
+      Current turn: {turn}
+      <br />
+      {winner !== null ? `Winner is: ${winner}` : ""}
+    </>
   );
 };
 
