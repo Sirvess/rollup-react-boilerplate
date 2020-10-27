@@ -5,7 +5,8 @@ import { render } from "react-dom";
 import { TicTacToe } from "./components";
 
 const Container = styled.div`
-  background-color: black;
+  max-width: 400px;
+  max-height: 400px;
 `;
 
 export const Main = () => (
