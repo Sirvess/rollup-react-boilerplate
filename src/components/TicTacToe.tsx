@@ -3,24 +3,28 @@ import styled from "styled-components";
 
 const GameContainer = styled.div`
   display: grid;
-  grid-gap: 1px;
   grid-template-columns: repeat(3, 100px);
   grid-template-rows: repeat(3, 100px);
-  border: 1px solid yellow;
+  border: 0.5px solid blue;
 `;
-const GameCell = styled.div`
+const GameCell = styled.div<{ checked: boolean }>`
   display: flex;
-  border: 1px solid blue;
+  border: 0.5px solid blue;
   justify-content: center;
   align-items: center;
   cursor: pointer;
+  background-color: ${({ checked }) => (checked ? `grey` : `transparent`)};
+
+  &:hover {
+    background-color: grey;
+  }
 `;
 
 type CellValue = "x" | "o" | null;
 type GameArr = CellValue[];
 type WinChecker = (x: GameArr) => CellValue;
 
-const emptyGame: () => GameArr = () => [
+const getEmptyGame: () => GameArr = () => [
   null,
   null,
   null,
@@ -71,10 +75,15 @@ const checkIfWinner = (game: GameArr): CellValue =>
   winningTests.reduce((a, b) => (a !== null ? a : b(game)), null as CellValue);
 
 const Game = () => {
-  const [gameState, setGameState] = React.useState<GameArr>(emptyGame());
+  const [gameState, setGameState] = React.useState<GameArr>(getEmptyGame());
   const [winner, setWinner] = React.useState<"x" | "o" | null>(null);
   const [turn, setTurn] = React.useState<"x" | "o">("x");
   const toggleTurn = () => (turn === "x" ? setTurn("o") : setTurn("x"));
+  const setNewGame = React.useCallback(() => {
+    setGameState(getEmptyGame());
+    setWinner(null);
+    setTurn("x");
+  }, [setGameState, setWinner, setTurn]);
 
   return (
     <>
@@ -84,20 +93,19 @@ const Game = () => {
             key={i}
             onClick={() => {
               if (gameState[i] === null && !winner) {
-                const newGame = gameState;
-                newGame[i] = turn;
-                setGameState(newGame);
-                setWinner(checkIfWinner(gameState));
+                const gameNextTurn = gameState.slice();
+                gameNextTurn[i] = turn;
+                setWinner(checkIfWinner(gameNextTurn));
+                setGameState(gameNextTurn);
                 toggleTurn();
               } else if (
                 gameState.filter((x) => x === null).length === 0 ||
                 winner
               ) {
-                setGameState(emptyGame());
-                setWinner(null);
-                setTurn("x");
+                setNewGame();
               }
             }}
+            checked={gameState[i] !== null ? true : false}
           >
             {x || `-`}
           </GameCell>
@@ -109,9 +117,7 @@ const Game = () => {
       <br />
       <button
         onClick={() => {
-          setGameState(emptyGame());
-          setWinner(null);
-          setTurn("x");
+          setNewGame();
         }}
       >
         Reset
