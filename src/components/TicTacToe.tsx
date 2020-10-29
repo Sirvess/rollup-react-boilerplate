@@ -1,13 +1,14 @@
 import * as React from "react";
 import styled from "styled-components";
 
-const GameContainer = styled.div`
+const GameGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 100px);
   grid-template-rows: repeat(3, 100px);
   border: 0.5px solid blue;
 `;
-const GameCell = styled.div<{ checked: boolean }>`
+
+const Cell = styled.div<{ checked: boolean }>`
   display: flex;
   border: 0.5px solid blue;
   justify-content: center;
@@ -22,7 +23,6 @@ const GameCell = styled.div<{ checked: boolean }>`
 
 type CellValue = "x" | "o" | null;
 type GameArr = CellValue[];
-type WinChecker = (x: GameArr) => CellValue;
 
 const getEmptyGame: () => GameArr = () => [
   null,
@@ -49,32 +49,23 @@ const getWinner = (a: CellValue, b: CellValue) =>
 const rowOneIndeces = [0, 1, 2];
 const rowTwoIndeces = [3, 4, 5];
 const rowThreeIndeces = [6, 7, 8];
-const checkRows: WinChecker = (game) =>
-  [rowOneIndeces, rowTwoIndeces, rowThreeIndeces]
-    .map(checkIndeces(game))
-    .reduce(getWinner);
+const rows = [rowOneIndeces, rowTwoIndeces, rowThreeIndeces];
 
 const colOneIndeces = [0, 3, 6];
 const colTwoIndeces = [1, 4, 7];
 const colThreeIndeces = [2, 5, 8];
-const checkColumns: WinChecker = (game) =>
-  [colOneIndeces, colTwoIndeces, colThreeIndeces]
-    .map(checkIndeces(game))
-    .reduce(getWinner);
+const columns = [colOneIndeces, colTwoIndeces, colThreeIndeces];
 
 const topLeftDiagIndeces = [0, 4, 8];
 const topRightDiagIndeces = [2, 4, 6];
-const checkDiagonals: WinChecker = (game) =>
-  [topLeftDiagIndeces, topRightDiagIndeces]
-    .map(checkIndeces(game))
-    .reduce(getWinner);
+const diagonals = [topLeftDiagIndeces, topRightDiagIndeces];
 
-const winningTests: WinChecker[] = [checkRows, checkColumns, checkDiagonals];
+const winningTests = [...rows, ...columns, ...diagonals];
 
 const checkIfWinner = (game: GameArr): CellValue =>
-  winningTests.reduce((a, b) => (a !== null ? a : b(game)), null as CellValue);
+  winningTests.map(checkIndeces(game)).reduce(getWinner);
 
-const Game = () => {
+export const TicTacToe = () => {
   const [gameState, setGameState] = React.useState<GameArr>(getEmptyGame());
   const [winner, setWinner] = React.useState<"x" | "o" | null>(null);
   const [turn, setTurn] = React.useState<"x" | "o">("x");
@@ -87,9 +78,9 @@ const Game = () => {
 
   return (
     <>
-      <GameContainer>
+      <GameGrid>
         {gameState.map((x, i) => (
-          <GameCell
+          <Cell
             key={i}
             onClick={() => {
               if (gameState[i] === null && !winner) {
@@ -108,9 +99,9 @@ const Game = () => {
             checked={gameState[i] !== null ? true : false}
           >
             {x || `-`}
-          </GameCell>
+          </Cell>
         ))}
-      </GameContainer>
+      </GameGrid>
       Current turn: {turn}
       <br />
       {winner !== null ? `Winner is: ${winner}` : ""}
@@ -125,9 +116,3 @@ const Game = () => {
     </>
   );
 };
-
-export const TicTacToe = () => (
-  <div>
-    <Game />
-  </div>
-);
