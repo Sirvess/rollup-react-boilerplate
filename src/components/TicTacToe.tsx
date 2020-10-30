@@ -15,9 +15,20 @@ const Cell = styled.div<{ checked: boolean }>`
   align-items: center;
   cursor: pointer;
   background-color: ${({ checked }) => (checked ? `grey` : `transparent`)};
+  font-size: 20px;
 
   &:hover {
     background-color: grey;
+  }
+`;
+
+const Controls = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin: 20px;
+  font-size: 20px;
+  > * {
+    font-size: 20px;
   }
 `;
 
@@ -102,17 +113,18 @@ export const TicTacToe = () => {
           </Cell>
         ))}
       </GameGrid>
-      Current turn: {turn}
-      <br />
-      {winner !== null ? `Winner is: ${winner}` : ""}
-      <br />
-      <button
-        onClick={() => {
-          setNewGame();
-        }}
-      >
-        Reset
-      </button>
+      <Controls>
+        <p>{winner ? `Winner is: ${winner}` : `Current turn: ${turn}`}</p>
+        <br />
+        <br />
+        <button
+          onClick={() => {
+            setNewGame();
+          }}
+        >
+          New game
+        </button>
+      </Controls>
     </>
   );
 };
