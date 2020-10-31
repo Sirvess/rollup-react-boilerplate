@@ -26,7 +26,7 @@ const Controls = styled.div`
   display: flex;
   justify-content: space-between;
   margin: 20px;
-  font-size: 20px;
+  &,
   > * {
     font-size: 20px;
   }
