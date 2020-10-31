@@ -7,6 +7,7 @@
   "license": "MIT",
   "scripts": {
     "bundle": "rm -rf dist/ && rollup --c",
+    "clean": "rm -rf dist/ && rm -rf node_modules/",
     "check-types": "tsc --noEmit",
     "dev": "rollup --c rollup.config.dev.js --watch"
   },
