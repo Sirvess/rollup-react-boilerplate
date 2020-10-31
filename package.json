@@ -6,7 +6,7 @@
   "author": "Sirvess",
   "license": "MIT",
   "scripts": {
-    "bundle": "rollup --c",
+    "bundle": "rm -rf dist/ && rollup --c",
     "check-types": "tsc --noEmit",
     "dev": "rollup --c rollup.config.dev.js --watch"
   },
