@@ -94,6 +94,9 @@ const winningTests = [
 const checkIfWinner = (game: GameArr): CellValue =>
   winningTests.map(checkIndeces(game)).reduce(getWinner);
 
+const isGameOver = (gameState: GameArr, winnerOverride: "x" | "o" | null) =>
+  gameState.filter((x) => x === null).length === 0 || winnerOverride;
+
 export const TicTacToe = () => {
   const [gameState, setGameState] = React.useState<GameArr>(getEmptyGame());
   const [winner, setWinner] = React.useState<"x" | "o" | null>(null);
@@ -118,10 +121,7 @@ export const TicTacToe = () => {
                 setWinner(checkIfWinner(gameNextTurn));
                 setGameState(gameNextTurn);
                 toggleTurn();
-              } else if (
-                gameState.filter((x) => x === null).length === 0 ||
-                winner
-              ) {
+              } else if (isGameOver(gameState, winner)) {
                 setNewGame();
               }
             }}
@@ -132,7 +132,13 @@ export const TicTacToe = () => {
         ))}
       </GameGrid>
       <Controls>
-        <p>{winner ? `Winner is: ${winner}` : `Current turn: ${turn}`}</p>
+        <p>
+          {winner
+            ? `Winner is: ${winner}`
+            : isGameOver(gameState, winner)
+            ? `NOBODY WINS`
+            : `Current turn: ${turn}`}
+        </p>
         <br />
         <button
           onClick={() => {
