@@ -35,6 +35,8 @@ const Controls = styled.div`
 type CellValue = "x" | "o" | null;
 type GameArr = CellValue[];
 
+const GAME_SIZE = 9; //3x3 matrix
+
 const getEmptyGame: () => GameArr = () => [
   null,
   null,
@@ -57,21 +59,37 @@ const checkIndeces: (
 const getWinner = (a: CellValue, b: CellValue) =>
   a !== null ? a : b !== null ? b : null;
 
-const rowOneIndeces = [0, 1, 2];
-const rowTwoIndeces = [3, 4, 5];
-const rowThreeIndeces = [6, 7, 8];
-const rows = [rowOneIndeces, rowTwoIndeces, rowThreeIndeces];
-
-const colOneIndeces = [0, 3, 6];
-const colTwoIndeces = [1, 4, 7];
-const colThreeIndeces = [2, 5, 8];
-const columns = [colOneIndeces, colTwoIndeces, colThreeIndeces];
+// Assume square board
+const getRows = (gameSize: number) => {
+  const rowSize = Math.sqrt(gameSize);
+  return new Array(rowSize)
+    .fill(null)
+    .map((val, outerIndex) =>
+      new Array(rowSize)
+        .fill(null)
+        .map((val, innerIndex) => innerIndex + rowSize * outerIndex)
+    );
+};
+const getColumns = (gameSize: number) => {
+  const colSize = Math.sqrt(gameSize);
+  return new Array(colSize)
+    .fill(null)
+    .map((val, outerIndex) =>
+      new Array(colSize)
+        .fill(null)
+        .map((val, innerIndex) => innerIndex * colSize + outerIndex)
+    );
+};
 
 const topLeftDiagIndeces = [0, 4, 8];
 const topRightDiagIndeces = [2, 4, 6];
 const diagonals = [topLeftDiagIndeces, topRightDiagIndeces];
 
-const winningTests = [...rows, ...columns, ...diagonals];
+const winningTests = [
+  ...getRows(GAME_SIZE),
+  ...getColumns(GAME_SIZE),
+  ...diagonals,
+];
 
 const checkIfWinner = (game: GameArr): CellValue =>
   winningTests.map(checkIndeces(game)).reduce(getWinner);
@@ -115,7 +133,6 @@ export const TicTacToe = () => {
       </GameGrid>
       <Controls>
         <p>{winner ? `Winner is: ${winner}` : `Current turn: ${turn}`}</p>
-        <br />
         <br />
         <button
           onClick={() => {
