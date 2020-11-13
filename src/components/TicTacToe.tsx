@@ -95,7 +95,7 @@ export const TicTacToe = () => {
   const [gameState, setGameState] = React.useState<GameArr>(getEmptyGame());
   const [winner, setWinner] = React.useState<CellValue>(null);
   const [turn, setTurn] = React.useState<"x" | "o">("x");
-  const toggleTurn = () => (turn === "x" ? setTurn("o") : setTurn("x"));
+  const toggleTurn = () => setTurn(turn === "x" ? "o" : "x");
   const setNewGame = React.useCallback(() => {
     setGameState(getEmptyGame());
     setWinner(null);
