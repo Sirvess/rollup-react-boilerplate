@@ -37,17 +37,8 @@ type GameArr = CellValue[];
 
 const GAME_SIZE = 9; //3x3 matrix
 
-const getEmptyGame: () => GameArr = () => [
-  null,
-  null,
-  null,
-  null,
-  null,
-  null,
-  null,
-  null,
-  null,
-];
+const getEmptyGame: (gameSize: number) => GameArr = (gameSize) =>
+  new Array(gameSize).fill(null);
 
 const checkIndeces: (
   game: GameArr
@@ -64,10 +55,10 @@ const getIndeces = (type: "rows" | "columns") => (gameSize: number) => {
   const sideLength = Math.sqrt(gameSize);
   return new Array(sideLength)
     .fill(null)
-    .map((val, outerIndex) =>
+    .map((_, outerIndex) =>
       new Array(sideLength)
         .fill(null)
-        .map((val, innerIndex) =>
+        .map((_, innerIndex) =>
           type === "rows"
             ? innerIndex + sideLength * outerIndex
             : innerIndex * sideLength + outerIndex
@@ -92,12 +83,14 @@ const isGameOver = (gameState: GameArr, winnerOverride: CellValue) =>
   gameState.filter((x) => x === null).length === 0 || winnerOverride;
 
 export const TicTacToe = () => {
-  const [gameState, setGameState] = React.useState<GameArr>(getEmptyGame());
+  const [gameState, setGameState] = React.useState<GameArr>(
+    getEmptyGame(GAME_SIZE)
+  );
   const [winner, setWinner] = React.useState<CellValue>(null);
   const [turn, setTurn] = React.useState<"x" | "o">("x");
   const toggleTurn = () => setTurn(turn === "x" ? "o" : "x");
   const setNewGame = React.useCallback(() => {
-    setGameState(getEmptyGame());
+    setGameState(getEmptyGame(GAME_SIZE));
     setWinner(null);
     setTurn("x");
   }, [setGameState, setWinner, setTurn]);
