@@ -94,12 +94,12 @@ const winningTests = [
 const checkIfWinner = (game: GameArr): CellValue =>
   winningTests.map(checkIndeces(game)).reduce(getWinner);
 
-const isGameOver = (gameState: GameArr, winnerOverride: "x" | "o" | null) =>
+const isGameOver = (gameState: GameArr, winnerOverride: CellValue) =>
   gameState.filter((x) => x === null).length === 0 || winnerOverride;
 
 export const TicTacToe = () => {
   const [gameState, setGameState] = React.useState<GameArr>(getEmptyGame());
-  const [winner, setWinner] = React.useState<"x" | "o" | null>(null);
+  const [winner, setWinner] = React.useState<CellValue>(null);
   const [turn, setTurn] = React.useState<"x" | "o">("x");
   const toggleTurn = () => (turn === "x" ? setTurn("o") : setTurn("x"));
   const setNewGame = React.useCallback(() => {
