@@ -60,24 +60,18 @@ const getWinner = (a: CellValue, b: CellValue) =>
   a !== null ? a : b !== null ? b : null;
 
 // Assume square board
-const getRows = (gameSize: number) => {
-  const rowSize = Math.sqrt(gameSize);
-  return new Array(rowSize)
+const getIndeces = (type: "rows" | "columns") => (gameSize: number) => {
+  const sideLength = Math.sqrt(gameSize);
+  return new Array(sideLength)
     .fill(null)
     .map((val, outerIndex) =>
-      new Array(rowSize)
+      new Array(sideLength)
         .fill(null)
-        .map((val, innerIndex) => innerIndex + rowSize * outerIndex)
-    );
-};
-const getColumns = (gameSize: number) => {
-  const colSize = Math.sqrt(gameSize);
-  return new Array(colSize)
-    .fill(null)
-    .map((val, outerIndex) =>
-      new Array(colSize)
-        .fill(null)
-        .map((val, innerIndex) => innerIndex * colSize + outerIndex)
+        .map((val, innerIndex) =>
+          type === "rows"
+            ? innerIndex + sideLength * outerIndex
+            : innerIndex * sideLength + outerIndex
+        )
     );
 };
 
@@ -86,8 +80,8 @@ const topRightDiagIndeces = [2, 4, 6];
 const diagonals = [topLeftDiagIndeces, topRightDiagIndeces];
 
 const winningTests = [
-  ...getRows(GAME_SIZE),
-  ...getColumns(GAME_SIZE),
+  ...getIndeces("rows")(GAME_SIZE),
+  ...getIndeces("columns")(GAME_SIZE),
   ...diagonals,
 ];
 
