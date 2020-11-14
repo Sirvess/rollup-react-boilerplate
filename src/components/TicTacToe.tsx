@@ -32,10 +32,11 @@ const Controls = styled.div`
   }
 `;
 
+// TODO: Use Maybe
 type CellValue = "x" | "o" | null;
 type GameArr = CellValue[];
 
-const GAME_SIZE = 9; //3x3 matrix
+const GAME_SIZE = 9;
 
 const getEmptyGame: (gameSize: number) => GameArr = (gameSize) =>
   new Array(gameSize).fill(null);
@@ -127,13 +128,7 @@ export const TicTacToe = () => {
             : `Current turn: ${turn}`}
         </p>
         <br />
-        <button
-          onClick={() => {
-            setNewGame();
-          }}
-        >
-          New game
-        </button>
+        <button onClick={setNewGame}>New game</button>
       </Controls>
     </>
   );
