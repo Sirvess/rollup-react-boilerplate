@@ -67,6 +67,7 @@ const getIndeces = (type: "rows" | "columns") => (gameSize: number) => {
     );
 };
 
+// TODO: fn to create diagonals to support different gamesizes
 const topLeftDiagIndeces = [0, 4, 8];
 const topRightDiagIndeces = [2, 4, 6];
 const diagonals = [topLeftDiagIndeces, topRightDiagIndeces];
