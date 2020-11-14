@@ -1,10 +1,11 @@
 import * as React from "react";
 import styled from "styled-components";
 
-const GameGrid = styled.div`
+const GameGrid = styled.div<{ gameSize: number }>`
   display: grid;
-  grid-template-columns: repeat(3, 100px);
-  grid-template-rows: repeat(3, 100px);
+  grid-template: ${({ gameSize }) => `repeat(${Math.sqrt(gameSize)}, 100px)`} / ${({
+      gameSize,
+    }) => `repeat(${Math.sqrt(gameSize)}, 100px)`};
   border: 0.5px solid blue;
 `;
 
@@ -99,7 +100,7 @@ export const TicTacToe = () => {
 
   return (
     <>
-      <GameGrid>
+      <GameGrid gameSize={GAME_SIZE}>
         {gameState.map((x, i) => (
           <Cell
             key={i}
