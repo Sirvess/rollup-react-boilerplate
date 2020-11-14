@@ -14,7 +14,7 @@ const Cell = styled.div<{ checked: boolean }>`
   border: 0.5px solid blue;
   justify-content: center;
   align-items: center;
-  cursor: pointer;
+  cursor: ${({ checked }) => (checked ? `default` : `pointer`)};
   background-color: ${({ checked }) => (checked ? `grey` : `transparent`)};
   font-size: 20px;
 
