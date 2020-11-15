@@ -91,24 +91,25 @@ const checkIfWinner = (game: GameArr): CellValue =>
 
 const isGameOver = (gameState: GameArr, winnerOverride: CellValue) =>
   gameState.filter((x) => x === null).length === 0 || winnerOverride;
-
+const INITIAL_GAME_SIZE = 9;
 export const TicTacToe = () => {
-  const GAME_SIZE = 16;
+  const [gameSize, setGameSize] = React.useState(INITIAL_GAME_SIZE);
   const [gameState, setGameState] = React.useState<GameArr>(
-    getEmptyGame(GAME_SIZE)
+    getEmptyGame(gameSize)
   );
   const [winner, setWinner] = React.useState<CellValue>(null);
   const [turn, setTurn] = React.useState<"x" | "o">("x");
   const toggleTurn = () => setTurn(turn === "x" ? "o" : "x");
   const setNewGame = React.useCallback(() => {
-    setGameState(getEmptyGame(GAME_SIZE));
+    setGameState(getEmptyGame(gameSize));
     setWinner(null);
     setTurn("x");
-  }, [setGameState, setWinner, setTurn]);
+  }, [setGameState, setWinner, setTurn, gameSize]);
+  React.useEffect(setNewGame, [gameSize]);
 
   return (
     <>
-      <GameGrid gameSize={GAME_SIZE}>
+      <GameGrid gameSize={gameSize}>
         {gameState.map((x, i) => (
           <Cell
             key={i}
