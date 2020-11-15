@@ -37,8 +37,6 @@ const Controls = styled.div`
 type CellValue = "x" | "o" | null;
 type GameArr = CellValue[];
 
-const GAME_SIZE = 9;
-
 const getEmptyGame: (gameSize: number) => GameArr = (gameSize) =>
   new Array(gameSize).fill(null);
 
@@ -68,24 +66,34 @@ const getIndeces = (type: "rows" | "columns") => (gameSize: number) => {
     );
 };
 
-// TODO: fn to create diagonals to support different gamesizes
-const topLeftDiagIndeces = [0, 4, 8];
-const topRightDiagIndeces = [2, 4, 6];
-const diagonals = [topLeftDiagIndeces, topRightDiagIndeces];
+const getDiagonal = (x: "left" | "right") => (gameSize: number) => {
+  const sideLength = Math.sqrt(gameSize);
+  return new Array(sideLength)
+    .fill(null)
+    .map((_, i) =>
+      x === "left" ? i + i * sideLength : (i + 1) * sideLength - (i + 1)
+    );
+};
 
-const winningTests = [
-  ...getIndeces("rows")(GAME_SIZE),
-  ...getIndeces("columns")(GAME_SIZE),
-  ...diagonals,
+const diagonals = (gameSize: number) => [
+  getDiagonal("left")(gameSize),
+  getDiagonal("right")(gameSize),
+];
+
+const winningTests = (gameSize: number) => [
+  ...getIndeces("rows")(gameSize),
+  ...getIndeces("columns")(gameSize),
+  ...diagonals(gameSize),
 ];
 
 const checkIfWinner = (game: GameArr): CellValue =>
-  winningTests.map(checkIndeces(game)).reduce(getWinner);
+  winningTests(game.length).map(checkIndeces(game)).reduce(getWinner);
 
 const isGameOver = (gameState: GameArr, winnerOverride: CellValue) =>
   gameState.filter((x) => x === null).length === 0 || winnerOverride;
 
 export const TicTacToe = () => {
+  const GAME_SIZE = 16;
   const [gameState, setGameState] = React.useState<GameArr>(
     getEmptyGame(GAME_SIZE)
   );
