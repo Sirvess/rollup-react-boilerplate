@@ -29,11 +29,10 @@ const Controls = styled.div`
   margin: 20px;
   &,
   > * {
-    font-size: 20px;
+    font-size: 16px;
   }
 `;
 
-// TODO: Use Maybe
 type CellValue = "x" | "o" | null;
 type GameArr = CellValue[];
 
@@ -100,12 +99,16 @@ export const TicTacToe = () => {
   const [winner, setWinner] = React.useState<CellValue>(null);
   const [turn, setTurn] = React.useState<"x" | "o">("x");
   const toggleTurn = () => setTurn(turn === "x" ? "o" : "x");
-  const setNewGame = React.useCallback(() => {
-    setGameState(getEmptyGame(gameSize));
-    setWinner(null);
-    setTurn("x");
-  }, [setGameState, setWinner, setTurn, gameSize]);
-  React.useEffect(setNewGame, [gameSize]);
+  const setNewGame = React.useCallback(
+    (size: number) => {
+      setGameSize(size);
+      setGameState(getEmptyGame(size));
+      setWinner(null);
+      setTurn("x");
+    },
+    [setGameState, setWinner, setTurn, setGameSize, gameSize]
+  );
+  React.useEffect(() => setNewGame(gameSize), [gameSize]);
 
   return (
     <>
@@ -121,7 +124,7 @@ export const TicTacToe = () => {
                 setGameState(gameNextTurn);
                 toggleTurn();
               } else if (isGameOver(gameState, winner)) {
-                setNewGame();
+                setNewGame(gameSize);
               }
             }}
             checked={gameState[i] !== null ? true : false}
@@ -139,7 +142,8 @@ export const TicTacToe = () => {
             : `Current turn: ${turn}`}
         </p>
         <br />
-        <button onClick={setNewGame}>New game</button>
+        <button onClick={() => setNewGame(9)}>Reset (3)</button>
+        <button onClick={() => setNewGame(16)}>Reset (4)</button>
       </Controls>
     </>
   );
