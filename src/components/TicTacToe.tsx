@@ -92,27 +92,24 @@ const isGameOver = (gameState: GameArr, winnerOverride: CellValue) =>
   gameState.filter((x) => x === null).length === 0 || winnerOverride;
 const INITIAL_GAME_SIZE = 9;
 export const TicTacToe = () => {
-  const [gameSize, setGameSize] = React.useState(INITIAL_GAME_SIZE);
+  const [gameSize, resetGame] = React.useState({ gameSize: INITIAL_GAME_SIZE });
   const [gameState, setGameState] = React.useState<GameArr>(
-    getEmptyGame(gameSize)
+    getEmptyGame(gameSize.gameSize)
   );
   const [winner, setWinner] = React.useState<CellValue>(null);
   const [turn, setTurn] = React.useState<"x" | "o">("x");
   const toggleTurn = () => setTurn(turn === "x" ? "o" : "x");
-  const setNewGame = React.useCallback(
-    (size: number) => {
-      setGameSize(size);
-      setGameState(getEmptyGame(size));
-      setWinner(null);
-      setTurn("x");
-    },
-    [setGameState, setWinner, setTurn, setGameSize, gameSize]
-  );
-  React.useEffect(() => setNewGame(gameSize), [gameSize]);
+  const initializeGame = () => {
+    resetGame(gameSize);
+    setGameState(getEmptyGame(gameSize.gameSize));
+    setWinner(null);
+    setTurn("x");
+  };
+  React.useEffect(initializeGame, [gameSize]);
 
   return (
     <>
-      <GameGrid gameSize={gameSize}>
+      <GameGrid gameSize={gameSize.gameSize}>
         {gameState.map((x, i) => (
           <Cell
             key={i}
@@ -124,7 +121,7 @@ export const TicTacToe = () => {
                 setGameState(gameNextTurn);
                 toggleTurn();
               } else if (isGameOver(gameState, winner)) {
-                setNewGame(gameSize);
+                resetGame(gameSize);
               }
             }}
             checked={gameState[i] !== null ? true : false}
@@ -142,8 +139,8 @@ export const TicTacToe = () => {
             : `Current turn: ${turn}`}
         </p>
         <br />
-        <button onClick={() => setNewGame(9)}>Reset (3)</button>
-        <button onClick={() => setNewGame(16)}>Reset (4)</button>
+        <button onClick={() => resetGame({ gameSize: 9 })}>Reset (3)</button>
+        <button onClick={() => resetGame({ gameSize: 16 })}>Reset (4)</button>
       </Controls>
     </>
   );
