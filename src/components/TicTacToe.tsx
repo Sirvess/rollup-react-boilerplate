@@ -1,6 +1,8 @@
 import * as React from "react";
 import styled from "styled-components";
 
+const INITIAL_GAME_SIZE = 9;
+
 const GameGrid = styled.div<{ gameSize: number }>`
   display: grid;
   grid-template: ${({ gameSize }) => `repeat(${Math.sqrt(gameSize)}, 100px)`} / ${({
@@ -74,7 +76,7 @@ const getDiagonal = (x: "left" | "right") => (gameSize: number) => {
     );
 };
 
-const diagonals = (gameSize: number) => [
+const getDiagonals = (gameSize: number) => [
   getDiagonal("left")(gameSize),
   getDiagonal("right")(gameSize),
 ];
@@ -82,7 +84,7 @@ const diagonals = (gameSize: number) => [
 const winningTests = (gameSize: number) => [
   ...getIndeces("rows")(gameSize),
   ...getIndeces("columns")(gameSize),
-  ...diagonals(gameSize),
+  ...getDiagonals(gameSize),
 ];
 
 const checkIfWinner = (game: GameArr): CellValue =>
@@ -90,7 +92,7 @@ const checkIfWinner = (game: GameArr): CellValue =>
 
 const isGameOver = (gameState: GameArr, winnerOverride: CellValue) =>
   gameState.filter((x) => x === null).length === 0 || winnerOverride;
-const INITIAL_GAME_SIZE = 9;
+
 export const TicTacToe = () => {
   const [gameSize, resetGame] = React.useState({ gameSize: INITIAL_GAME_SIZE });
   const [gameState, setGameState] = React.useState<GameArr>(
