@@ -48,8 +48,7 @@ const checkIndeces: (
     .map((i) => game[i])
     .reduce((a, b) => (a !== null && a === b ? a : null));
 
-const getWinner = (a: CellValue, b: CellValue) =>
-  a !== null ? a : b !== null ? b : null;
+const getWinner = (acc: CellValue, curr: CellValue) => acc ?? curr;
 
 // Assume square board
 const getIndeces = (type: "rows" | "columns") => (gameSize: number) => {
@@ -88,7 +87,7 @@ const winningTests = (gameSize: number) => [
 ];
 
 const checkIfWinner = (game: GameArr): CellValue =>
-  winningTests(game.length).map(checkIndeces(game)).reduce(getWinner);
+  winningTests(game.length).map(checkIndeces(game)).reduce(getWinner, null);
 
 const isGameOver = (gameState: GameArr, winnerOverride: CellValue) =>
   gameState.filter((x) => x === null).length === 0 || winnerOverride;
